@@ -2,8 +2,11 @@
 #include <string.h>
 #include <time.h>
 
-/* ---------- Structures ---------- */
 
+
+
+
+/* ---------- Structures ---------- */
 struct student {
     char name[20];
     char PRN[20];
@@ -52,16 +55,29 @@ void get_current_date(int *d, int *m, int *y) {
 /* ---------- Student Signup ---------- */
 
 void student_signup() {
+	FILE* prn_file;
+	FILE* pass_file;
+	prn_file=fopen("prn.txt", "a+");
+	pass_file=fopen("pass.txt", "a+");
+	
     total_students++;
+    char temp[20];
 
     printf("Enter name: ");
     scanf("%s", student_array[total_students].name);
 
     printf("Enter PRN: ");
-    scanf("%s", student_array[total_students].PRN);
+    scanf("%s", temp);
+    printf("%s", temp);
+    fputs(temp, prn_file);
+	fputs("\n", prn_file);
+	fclose(prn_file);
 
     printf("Create password: ");
-    scanf("%s", student_array[total_students].password);
+    scanf("%s", temp);
+    fputs(temp, pass_file);
+	fputs("\n", pass_file);
+	fclose(pass_file);
 
     student_array[total_students].n = 0;
 
@@ -72,21 +88,38 @@ void student_signup() {
 
 void student_login() {
     char prn[20], pass[20];
+    char prn_saved[30], pass_saved[30];
+    FILE* prn_file;
+	FILE* pass_file;
+	prn_file=fopen("prn.txt", "a+");
+	pass_file=fopen("pass.txt", "a+");
 
     printf("Enter PRN: ");
     scanf("%s", prn);
 
     printf("Enter password: ");
     scanf("%s", pass);
+	
+	memcpy(prn + strlen(prn), "\n", strlen(prn) + 1);
+	memcpy(pass + strlen(pass), "\n", strlen(pass) + 1);
+	
 
-    for (int i = 0; i <= total_students; i++) {
-        if (strcmp(student_array[i].PRN, prn) == 0 && strcmp(student_array[i].password, pass) == 0) {
-        	logged_in_as=i;
-        	printf("Logged in as %s  %s\n", student_array[logged_in_as].name, student_array[logged_in_as].PRN);
+
+
+
+    while (fgets(prn_saved, 30, prn_file)!= NULL) {
+    	fgets(pass_saved, 30, pass_file);
+        if (strcmp(prn_saved, prn) == 0 && strcmp(pass_saved, pass) == 0) {
+
+        	printf("Logged in as %s  %s\n", prn, pass);
+        	fclose(pass_file);
+        	fclose(prn_file);
         	return;
         }
     }
     printf("Invalid login!\n");
+    fclose(pass_file);
+	fclose(prn_file);
 
 }
 
@@ -230,9 +263,9 @@ void librarian_login() {
 /* ---------- Main ---------- */
 
 int main() {
+	
     int ch, index;
 	clear();
-	student_signup();
 
 
 
