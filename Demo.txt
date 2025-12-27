@@ -1,0 +1,83 @@
+ File 1: 
+ create_file.c
+ Creates the CSV file
+ #include <stdio.h>
+
+int main() {
+    FILE *fp;
+
+    fp = fopen("users.csv", "w");
+    if (fp == NULL) {
+        printf("File not created\n");
+        return 1;
+    }
+
+    fprintf(fp, "Name,PRN\n");   // CSV header
+    fclose(fp);
+
+    printf("users.csv file created successfully\n");
+    return 0;
+}
+
+
+ File 2
+: write_csv.c
+ Takes Name & PRN of 5 users and saves in CSV
+ #include <stdio.h>
+
+int main() {
+    FILE *fp;
+    char name[50];
+    char prn[20];
+    int i;
+
+    fp = fopen("users.csv", "a");   // append mode
+    if (fp == NULL) {
+        printf("Error opening file\n");
+        return 1;
+    }
+
+    for (i = 0; i < 5; i++) {
+        printf("Enter Name of user %d: ", i + 1);
+        scanf("%s", name);
+
+        printf("Enter PRN of user %d: ", i + 1);
+        scanf("%s", prn);
+
+        fprintf(fp, "%s,%s\n", name, prn);
+    }
+
+    fclose(fp);
+    printf("Data written successfully\n");
+
+    return 0;
+}
+
+
+ File 3: read_csv.c
+ Reads CSV file, stores data in variables, and prints
+ #include <stdio.h>
+
+int main() {
+    FILE *fp;
+    char name[50];
+    char prn[20];
+    char line[100];
+
+    fp = fopen("users.csv", "r");
+    if (fp == NULL) {
+        printf("File not found\n");
+        return 1;
+    }
+
+    fgets(line, sizeof(line), fp); // skip header
+
+    printf("\nUser Details:\n");
+
+    while (fscanf(fp, "%49[^,],%19s\n", name, prn) == 2) {
+        printf("Name: %s  PRN: %s\n", name, prn);
+    }
+
+    fclose(fp);
+    return 0;
+}
