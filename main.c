@@ -66,7 +66,8 @@ void student_signup() {
     scanf("%s", student_array[total_students].password);
 
     student_array[total_students].n = 0;
-
+	
+	clear();
     printf("Signup successful!\n");
 }
 
@@ -80,11 +81,11 @@ void student_login() {
 
     printf("Enter password: ");
     scanf("%s", pass);
-
+	
+	clear();
     for (int i = 0; i <= total_students; i++) {
         if (strcmp(student_array[i].PRN, prn) == 0 && strcmp(student_array[i].password, pass) == 0) {
         	logged_in_as=i;
-        	printf("Logged in as %s  %s\n", student_array[logged_in_as].name, student_array[logged_in_as].PRN);
         	return;
         }
     }
@@ -99,24 +100,28 @@ void student_login() {
 void borrow_books(int index) {
     printf("Enter number of books to borrow: ");
     scanf("%d", &student_array[index].n);
-
-    printf("Enter book IDs:\n");
+	clear();
+    printf("You wish to borrow %d books.\n", student_array[index].n);
+    printf("Please enter the book Id of the books you want to borrow\n");
+    
     for (int i = 0; i < student_array[index].n; i++) {
+    	printf("Enter %d book id: ", i+1);
         scanf("%d", &student_array[index].array[i]);
     }
 
     get_current_date(&student_array[index].borrow_day,
                      &student_array[index].borrow_month,
                      &student_array[index].borrow_year);
-
-    printf("Books borrowed successfully!\n");
+	
+	clear();
+    printf("%d books borrowed successfully!\n\n", student_array[index].n);
 }
 
 /* ---------- Check Due Date ---------- */
 
 void check_due_date(int index) {
     if (student_array[index].n == 0) {
-        printf("No books borrowed.\n");
+        printf("Cannot show due date, no books borrowed.\n");
         return;
     }
 
@@ -215,7 +220,8 @@ void librarian_login() {
 
     printf("Enter librarian password: ");
     scanf("%s", pass);
-
+	
+	clear();	
     if (strcmp(user, "admin") == 0 && strcmp(pass, "admin123") == 0) {
     	printf("Logged in as Librarian\n");
         logged_in_as=-1;
@@ -247,10 +253,11 @@ int main() {
     	if (logged_in_as==-2){
     		//give choices
     		printf("1.Login as Student\n");
-			printf("2. Login as Librarian\n");
+    		printf("2. Sign up as student\n");
+			printf("3. Login as Librarian\n");
 			printf("Press Ctrl+C to exit\n");
 			//input choice
-			printf("Enter choice: ");
+			printf("\nEnter choice: ");
             scanf(" %d", &ch);
             clear();
             
@@ -260,9 +267,13 @@ int main() {
             case 1: //user wants to login as student
 				student_login();
             	break;
-            case 2:
+            case 3:
             	//user wants to login as librarian
             	librarian_login();
+            	break;
+            case 2:
+            	//user wants to signup as student
+            	student_signup();
             	break;
             default://user did not choose a valid choice
             	printf("Invalid choice.\n");
@@ -285,7 +296,7 @@ int main() {
 			
 			
 			//input choice
-			printf("Enter choice: ");
+			printf("\nEnter choice: ");
             scanf(" %d", &ch);
             clear();
            
@@ -315,12 +326,15 @@ int main() {
     	//user is logged in as any one of the students
     	else {
     		//give choices
+    		printf("-->Logged in as %s  %s\n", student_array[logged_in_as].name, student_array[logged_in_as].PRN);
     		printf("1.View borrowed\n");
 			printf("2. Borrow books\n");
+			printf("3. Check due date\n");
+			printf("4. Logout\n");
 			printf("Press Ctrl+C to exit\n");
 			
 			//input choice
-			printf("Enter choice: ");
+			printf("\nEnter choice: ");
             scanf(" %d", &ch);
             clear();
             
@@ -328,12 +342,17 @@ int main() {
             //perform choice
             switch(ch){
             case 1://student wants to view borrowed books
-            	printf("Display books\n");
-            	//display_borrowed();
+            	display_borrowed(logged_in_as);
             	break;   
             case 2://student wants to borrow books
-            	printf("Borrow books");
-            	//borrow_books();
+            	printf("->Borrowing books \n");
+            	borrow_books(logged_in_as);
+            	break;
+            case 3://student wants to check due date
+            	check_due_date(logged_in_as);
+            	break;
+            case 4://student wants to logout
+            	logged_in_as=-2;
             	break;
             default://user did not choose a valid choice
             	printf("Invalid choice.\n");
@@ -364,4 +383,3 @@ int main() {
 }
 
         
-
