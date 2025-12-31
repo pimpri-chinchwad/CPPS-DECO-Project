@@ -292,6 +292,7 @@ int main() {
     		//give choices
     		printf("1.Add book\n");
 			printf("2. View books\n");
+			printf("3. Display all students\n");
 			printf("Press Ctrl+C to exit\n");
 			
 			
@@ -308,6 +309,8 @@ int main() {
             case 2://librarian wants to view books
             	display_books();
             	break;
+            case 3://librarian wants to see all students
+            	display_all_students();
             default://user did not choose a valid choice
             	printf("Invalid choice.\n");
     		}
